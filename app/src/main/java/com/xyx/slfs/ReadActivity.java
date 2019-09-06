@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -28,19 +29,7 @@ public class ReadActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private InterstitialAd mInterstitialAd;
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                   showAD();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +43,14 @@ public class ReadActivity extends AppCompatActivity {
         mInterstitialAd.setAdUnitId("ca-app-pub-7420611722821229/8957975111");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        sendAD();//定时广告
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
 
+        });
 
         pdfView = findViewById(R.id.read);
         loadPDF(pdfView, 0);
@@ -89,16 +84,7 @@ public class ReadActivity extends AppCompatActivity {
 
     }
 
-    private void sendAD() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Message message=new Message();
-                message.what=0;
-                handler.sendMessage(message);
-            }
-        }, 5000);
-    }
+
 
     private void showAD() {
         if (mInterstitialAd.isLoaded()) {
@@ -166,4 +152,7 @@ public class ReadActivity extends AppCompatActivity {
         //步骤4：提交
         editor.commit();
     }
+
+
+
 }
