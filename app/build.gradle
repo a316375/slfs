@@ -33,6 +33,7 @@ android {
         //    implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
         implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
         implementation 'com.google.android.gms:play-services-ads:18.1.1'
+
     }
 }
 
